@@ -104,7 +104,14 @@ filterInput.addEventListener('keyup', function() {
             .filter(item => isMatching(item.name, filterInput.value))
             .map(item => `<li>${item.name}</li>`)
             .join('')
-        : '';
+        : cities = response;
+            loadingBlock.style.display ='none';
+            filterBlock.style.display= 'block';
+            for (let city of cities){
+                let li = document.createElement('li');
+                li.innerHTML = `${city.name}`;
+                filterResult.append(li); 
+            };;
 });
 
 export {
