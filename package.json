@@ -2,7 +2,7 @@
   "name": "loftschool-example",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.html",
   "scripts": {
     "codestyle": "eslint src",
     "travis": "npm run codestyle && npm test",
