@@ -37,8 +37,38 @@ const homeworkContainer = document.querySelector('#homework-container');
  https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json
  */
 function loadTowns() {
+    var xhr = new XMLHttpRequest();
+    return new Promise (function(resolve, reject){
+        xhr.open('GET', 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
+        xhr.responseType = 'json';
+        xhr.addEventListener('load', () => {
+            loadingBlock.innerHTML='';
+            resolve(xhr.response.sort(function (a, b) {
+                if (a.name > b.name) {
+                    return 1;
+                }
+                if (a.name < b.name) {
+                    return -1;
+                }
+               
+                return 0;
+            }));
+        });
+        xhr.send();
+    });
 }
-
+let cities=[];
+loadTowns().
+        then(response => {
+            cities = response;
+            loadingBlock.style.display ='none';
+            filterBlock.style.display= 'block';
+            for (let city of cities){
+                let li = document.createElement('li');
+                li.innerHTML = `${city.name}`;
+                filterResult.append(li); 
+            };
+        });
 /*
  Функция должна проверять встречается ли подстрока chunk в строке full
  Проверка должна происходить без учета регистра символов
@@ -51,6 +81,11 @@ function loadTowns() {
    isMatching('Moscow', 'Moscov') // false
  */
 function isMatching(full, chunk) {
+    if (full.toLowerCase().indexOf(chunk.toLowerCase()) !== -1) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /* Блок с надписью "Загрузка" */
@@ -64,6 +99,12 @@ const filterResult = homeworkContainer.querySelector('#filter-result');
 
 filterInput.addEventListener('keyup', function() {
     // это обработчик нажатия кливиш в текстовом поле
+    filterResult.innerHTML = filterInput.value ?
+        cities
+            .filter(item => isMatching(item.name, filterInput.value))
+            .map(item => `<li>${item.name}</li>`)
+            .join('')
+        : '';
 });
 
 export {
